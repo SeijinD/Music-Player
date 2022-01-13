@@ -59,11 +59,11 @@ fun HomeScreen(
                     backgroundColor = MaterialTheme.colors.primaryVariant,
                     contentColor = MaterialTheme.colors.onPrimary
                 ) {
-                    HomeContent(navController = navController, viewModel = viewModel)
+
                 }
             }
         ) {
-
+            HomeContent(navController = navController, viewModel = viewModel)
         }
     }
 }
