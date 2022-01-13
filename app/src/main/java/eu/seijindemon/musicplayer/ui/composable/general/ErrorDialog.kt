@@ -1,4 +1,4 @@
-package eu.seijindemon.myinformation.ui.composable.general
+package eu.seijindemon.musicplayer.ui.composable.general
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
@@ -12,12 +12,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import eu.seijindemon.myinformation.R
 
 @Composable
 fun ErrorDialog(

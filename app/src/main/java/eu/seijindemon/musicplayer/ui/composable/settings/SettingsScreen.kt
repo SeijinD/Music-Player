@@ -29,7 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import eu.seijindemon.musicplayer.R
-import eu.seijindemon.myinformation.ui.composable.general.AutoSizeText
+import eu.seijindemon.musicplayer.ui.composable.general.AutoSizeText
 import eu.seijindemon.musicplayer.ui.composable.general.SetLanguage
 import eu.seijindemon.musicplayer.ui.theme.MusicPlayerTheme
 import eu.seijindemon.musicplayer.ui.viewmodel.LanguageViewModel

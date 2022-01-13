@@ -1,4 +1,4 @@
-package eu.seijindemon.myinformation.ui.composable.general
+package eu.seijindemon.musicplayer.ui.composable.general
 
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
