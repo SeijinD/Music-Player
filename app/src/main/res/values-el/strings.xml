@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Music Player</string>
+    <string name="back">Πίσω</string>
+    <string name="profile">Προφίλ</string>
+    <string name="share">Κοινοποίηση</string>
+    <string name="rate">Αξιολόγηση</string>
+    <string name="privacy_policy">Πολιτική Απορρήτου</string>
+    <string name="change_language">Αλλαγή γλώσσας</string>
+    <string name="english">Αγγλικά</string>
+    <string name="greek">Ελληνικά</string>
+    <string name="generic_error_message">Σφάλμα!</string>
+    <string name="test_progress_tag">Πρόοδος</string>
+    <string name="settings">Ρυθμίσεις</string>
+</resources>

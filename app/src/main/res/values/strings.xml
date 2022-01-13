@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Music Player</string>
+    <string name="back">Back</string>
+    <string name="profile">Profile</string>
+    <string name="share">Share</string>
+    <string name="rate">Rate</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="change_language">Change Language</string>
+    <string name="english">English</string>
+    <string name="greek">Greek</string>
+    <string name="generic_error_message">Error!</string>
+    <string name="test_progress_tag">Progress</string>
+    <string name="settings">Settings</string>
+</resources>
