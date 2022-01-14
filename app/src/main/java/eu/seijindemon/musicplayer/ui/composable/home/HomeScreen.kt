@@ -4,6 +4,7 @@ import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -17,6 +18,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import eu.seijindemon.musicplayer.R
+import eu.seijindemon.musicplayer.data.model.Song
 import eu.seijindemon.musicplayer.ui.composable.general.SetLanguage
 import eu.seijindemon.musicplayer.ui.theme.MusicPlayerTheme
 import eu.seijindemon.musicplayer.ui.viewmodel.AppViewModel
@@ -31,6 +33,8 @@ fun HomeScreen(
     // Language
     val currentLanguage = languageViewModel.language.observeAsState().value
     SetLanguage(language = currentLanguage!!)
+
+    val songs = listOf<Song>() // Change with viewModel list
 
     MusicPlayerTheme {
         Scaffold(
@@ -63,17 +67,36 @@ fun HomeScreen(
                 }
             }
         ) {
-            HomeContent(navController = navController, viewModel = viewModel)
+            HomeContent(
+                songs = songs,
+                navController = navController,
+                viewModel = viewModel
+            )
         }
     }
 }
 
 @Composable
 fun HomeContent(
+    songs: List<Song>,
     navController: NavController,
     viewModel: AppViewModel
 ) {
-
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize(),
+        contentPadding = PaddingValues(
+            all = 5.dp
+        )
+    ) {
+        items(songs) { song ->
+            SongCard(
+                song = song,
+                navController = navController,
+                viewModel = viewModel
+            )
+        }
+    }
 }
 
 @Preview(
@@ -85,8 +108,20 @@ fun HomeContent(
 fun HomeContentPreview() {
     val navController = rememberNavController()
     val viewModel: AppViewModel = viewModel()
+    val songs = listOf(
+        Song(1, "I love you", "Anonymous", "This is song for a big love."),
+        Song(2, "I love you", "Anonymous", "This is song for a big love."),
+        Song(3, "I love you", "Anonymous", "This is song for a big love."),
+        Song(4, "I love you", "Anonymous", "This is song for a big love."),
+        Song(5, "I love you", "Anonymous", "This is song for a big love."),
+        Song(6, "I love you", "Anonymous", "This is song for a big love."),
+        Song(7, "I love you", "Anonymous", "This is song for a big love."),
+        Song(8, "I love you", "Anonymous", "This is song for a big love."),
+        Song(9, "I love you", "Anonymous", "This is song for a big love.")
+    )
     MusicPlayerTheme {
         HomeContent(
+            songs = songs,
             navController = navController,
             viewModel = viewModel
         )
