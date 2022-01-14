@@ -60,24 +60,15 @@ fun PlayScreen (
                         )
                     }
                 )
-            },
-            bottomBar = {
-                BottomAppBar(
-                    backgroundColor = MaterialTheme.colors.primaryVariant,
-                    contentColor = MaterialTheme.colors.onPrimary
-                ) {
-
-                }
             }
         ) {
-            PlayContent(navController = navController, viewModel = viewModel)
+            PlayContent(viewModel = viewModel)
         }
     }
 }
 
 @Composable
 fun PlayContent(
-    navController: NavController,
     viewModel: AppViewModel
 ) {
     val context = LocalContext.current
@@ -88,28 +79,6 @@ fun PlayContent(
     )
 }
 
-@Composable
-fun AudioPlayer(
-    viewModel: AppViewModel,
-    mediaPlayer: MediaPlayer
-) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        viewModel.getFirstColor(),
-                        viewModel.getSecondColor()
-                    )
-                )
-            )
-            .padding(horizontal = MaterialTheme.dimens.SpacingHalf_8dp)
-    ) {
-
-    }
-}
-
 @Preview(
     showSystemUi = true,
     showBackground = true,
@@ -117,11 +86,9 @@ fun AudioPlayer(
 )
 @Composable
 fun PlayContentPreview() {
-    val navController = rememberNavController()
     val viewModel: AppViewModel = viewModel()
     MusicPlayerTheme {
         PlayContent(
-            navController = navController,
             viewModel = viewModel
         )
     }
