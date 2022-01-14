@@ -2,7 +2,6 @@ package eu.seijindemon.musicplayer.ui.composable.play
 
 import android.content.res.Configuration
 import android.media.MediaPlayer
-import android.widget.Space
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +21,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -36,6 +36,7 @@ import eu.seijindemon.musicplayer.ui.theme.dimens
 import eu.seijindemon.musicplayer.ui.viewmodel.AppViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 @Composable
 fun AudioPlayer(
@@ -144,12 +145,12 @@ fun PlayerSlider(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
-                text = "${currentMinutes.value!!} s",
+                text = formatTime(millis = currentMinutes.value!!),
                 color = Color.White
             )
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = "${mediaPlayer.duration} s",
+                text = formatTime(millis = mediaPlayer.duration),
                 color = Color.White
             )
         }
@@ -213,6 +214,7 @@ fun PlayerButtons(
                             delay(500)
                             viewModel.getMediaDuration(mediaPlayer = mediaPlayer)
                         }
+                        audioFlag.value = false
                     } else {
                         audioFlag.value = true
                         mediaPlayer.pause()
@@ -236,6 +238,27 @@ fun PlayerButtons(
         )
     }
 }
+
+@Composable
+private fun formatTime(millis: Int): String {
+    val millisLong = millis.toLong()
+    val hours = TimeUnit.MILLISECONDS.toHours(millisLong) % 24
+    val minutes = TimeUnit.MILLISECONDS.toMinutes(millisLong) % 60
+    val seconds = TimeUnit.MILLISECONDS.toSeconds(millisLong) % 60
+
+    return when {
+        hours == 0L && minutes == 0L -> String.format(
+            stringResource(id = R.string.time_seconds_formatter), seconds
+        )
+
+        hours == 0L && minutes > 0L -> String.format(
+            stringResource(R.string.time_minutes_seconds_formatter), minutes, seconds
+        )
+
+        else -> stringResource(R.string.time_hours_minutes_seconds_formatter, hours, minutes, seconds)
+    }
+}
+
 
 @Preview(
     showSystemUi = true,
