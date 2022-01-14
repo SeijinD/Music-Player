@@ -34,6 +34,8 @@ class AppViewModel @Inject constructor(
                 Log.d("TAG", "onFinish: Media Player Finished")
             }
         }
+
+        currentDuration!!.start()
     }
 
     fun getFirstColor(): Color {
