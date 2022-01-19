@@ -5,7 +5,6 @@ import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -110,6 +109,7 @@ fun HomeScreen(
 //            Toast.LENGTH_SHORT
 //        ).show()
         songsList = loadSongs()
+        viewModel.getSongs(songsList)
     }
 
     MusicPlayerTheme {

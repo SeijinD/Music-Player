@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import eu.seijindemon.musicplayer.data.model.Song
 import java.util.*
 import javax.inject.Inject
 
@@ -16,11 +17,18 @@ class AppViewModel @Inject constructor(
 
 ): ViewModel() {
 
-    private var _currentSong = MutableLiveData(-1L)
-    var currentSong: LiveData<Long> = _currentSong
+    private var _songs = MutableLiveData<List<Song>>()
+    var songs: LiveData<List<Song>> = _songs
 
-    fun getCurrentSongId(id: Long) {
-        _currentSong.value = id
+    fun getSongs(list: List<Song>) {
+        _songs.value = list
+    }
+
+    private var _currentSong = MutableLiveData<Song>()
+    var currentSong: LiveData<Song> = _currentSong
+
+    fun getCurrentSong(song: Song) {
+        _currentSong.value = song
     }
 
     // Media

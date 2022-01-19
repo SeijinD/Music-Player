@@ -2,28 +2,25 @@ package eu.seijindemon.musicplayer.ui.composable.play
 
 import android.content.res.Configuration
 import android.media.MediaPlayer
-import androidx.compose.foundation.background
+import android.net.Uri
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import eu.seijindemon.musicplayer.R
+import eu.seijindemon.musicplayer.data.model.Song
 import eu.seijindemon.musicplayer.ui.theme.MusicPlayerTheme
-import eu.seijindemon.musicplayer.ui.theme.dimens
 import eu.seijindemon.musicplayer.ui.viewmodel.AppViewModel
 
 @Composable
@@ -31,6 +28,8 @@ fun PlayScreen (
     navController: NavController,
     viewModel: AppViewModel
 ) {
+    val currentSong = viewModel.currentSong.observeAsState()
+
     MusicPlayerTheme {
         Scaffold(
             topBar = {
@@ -62,20 +61,27 @@ fun PlayScreen (
                 )
             }
         ) {
-            PlayContent(viewModel = viewModel)
+            if (currentSong != null) {
+                PlayContent(
+                    viewModel = viewModel,
+                    currentSong = currentSong.value!!
+                )
+            }
         }
     }
 }
 
 @Composable
 fun PlayContent(
-    viewModel: AppViewModel
+    viewModel: AppViewModel,
+    currentSong: Song
 ) {
     val context = LocalContext.current
-    val mediaPlayer: MediaPlayer = MediaPlayer.create(context, R.raw.hide_and_seek_music)
+    val mediaPlayer: MediaPlayer = MediaPlayer.create(context, currentSong.url)
     AudioPlayer(
         viewModel = viewModel,
-        mediaPlayer = mediaPlayer
+        mediaPlayer = mediaPlayer,
+        currentSong = currentSong
     )
 }
 
@@ -87,9 +93,12 @@ fun PlayContent(
 @Composable
 fun PlayContentPreview() {
     val viewModel: AppViewModel = viewModel()
+    val currentSong = Song(1L, "I love you1", "Anonymous1", Uri.EMPTY, 100, 3)
+
     MusicPlayerTheme {
         PlayContent(
-            viewModel = viewModel
+            viewModel = viewModel,
+            currentSong = currentSong
         )
     }
 }

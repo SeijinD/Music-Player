@@ -51,7 +51,7 @@ fun SongCard(
                 )
             )
             .clickable(onClick = {
-                viewModel.getCurrentSongId(song.id)
+                viewModel.getCurrentSong(song = song)
                 navController.navigate("play")
             }),
         verticalAlignment = Alignment.CenterVertically
