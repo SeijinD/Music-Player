@@ -6,21 +6,29 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -38,19 +46,70 @@ fun HomeScreen(
     navController: NavController,
     viewModel: AppViewModel
 ) {
+    val context = LocalContext.current
     var songsList = mutableListOf<Song>()
-
+    val openDialogPermission = remember { mutableStateOf(false) }
+    // Track if the user doesn't want to see the rationale any more.
+    var doNotShowRationale by rememberSaveable { mutableStateOf(false) }
     val readExternalPermissionState = rememberPermissionState(permission = android.Manifest.permission.READ_EXTERNAL_STORAGE)
+
     PermissionRequired(
         permissionState = readExternalPermissionState,
         permissionNotGrantedContent = {
-            Text("Read Storage Permission Not Granted")
+            if (doNotShowRationale) {
+                Toast.makeText(
+                    context,
+                    "Feature not available",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                openDialogPermission.value = true
+                if (openDialogPermission.value) {
+                    Dialog(onDismissRequest = { openDialogPermission.value = false }) {
+                        Column(
+                            modifier = Modifier
+                                .padding(all = 5.dp)
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.White),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Text(
+                                text = "The permission is important for this app. Please grant the permission.",
+                                textAlign = TextAlign.Center
+                            )
+                            Row {
+                                Button(onClick = {
+                                    readExternalPermissionState.launchPermissionRequest()
+                                }) {
+                                    Text("Ok!")
+                                }
+                                Spacer(Modifier.width(8.dp))
+                                Button(onClick = {
+                                    doNotShowRationale = true
+                                }) {
+                                    Text("Nope")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         },
         permissionNotAvailableContent = {
-            Text("Read Storage Permission Not Available")
+            Toast.makeText(
+                context,
+                "Read Storage Permission Not Available",
+                Toast.LENGTH_SHORT
+            ).show()
         }) {
+//        Toast.makeText(
+//            context,
+//            "Read Permission is granted.",
+//            Toast.LENGTH_SHORT
+//        ).show()
         songsList = loadSongs()
-        Log.d("TAG1", songsList.size.toString())
     }
 
     MusicPlayerTheme {
