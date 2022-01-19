@@ -1,6 +1,11 @@
 package eu.seijindemon.musicplayer.ui.composable.home
 
+import android.content.ContentUris
 import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
+import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -12,34 +17,41 @@ import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionRequired
+import com.google.accompanist.permissions.rememberPermissionState
 import eu.seijindemon.musicplayer.R
 import eu.seijindemon.musicplayer.data.model.Song
 import eu.seijindemon.musicplayer.ui.theme.MusicPlayerTheme
 import eu.seijindemon.musicplayer.ui.viewmodel.AppViewModel
 
+@ExperimentalPermissionsApi
 @Composable
 fun HomeScreen(
     navController: NavController,
     viewModel: AppViewModel
 ) {
-//    val songs = listOf<Song>() // Change with viewModel list
-    val songs = listOf(
-        Song(1, "I love you1", "Anonymous1", ""),
-        Song(2, "I love you2", "Anonymous2", ""),
-        Song(3, "I love you3", "Anonymous3", ""),
-        Song(4, "I love you4", "Anonymous4", ""),
-        Song(5, "I love you5", "Anonymous5", ""),
-        Song(6, "I love you6", "Anonymous6", ""),
-        Song(7, "I love you7", "Anonymous7", ""),
-        Song(8, "I love you8", "Anonymous8", ""),
-        Song(9, "I love you9", "Anonymous9", "")
-    )
+    var songsList = mutableListOf<Song>()
+
+    val readExternalPermissionState = rememberPermissionState(permission = android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    PermissionRequired(
+        permissionState = readExternalPermissionState,
+        permissionNotGrantedContent = {
+            Text("Read Storage Permission Not Granted")
+        },
+        permissionNotAvailableContent = {
+            Text("Read Storage Permission Not Available")
+        }) {
+        songsList = loadSongs()
+        Log.d("TAG1", songsList.size.toString())
+    }
 
     MusicPlayerTheme {
         Scaffold(
@@ -73,7 +85,7 @@ fun HomeScreen(
             }
         ) {
             HomeContent(
-                songs = songs,
+                songs = songsList,
                 navController = navController,
                 viewModel = viewModel
             )
@@ -112,6 +124,62 @@ fun HomeContent(
     }
 }
 
+@Composable
+private fun loadSongs(): MutableList<Song> {
+    val context = LocalContext.current
+
+    val songsList = mutableListOf<Song>()
+
+    val selection = "${MediaStore.Audio.Media.IS_MUSIC}  !=0"
+    val sortOrder = "${MediaStore.Audio.Media.DISPLAY_NAME} ASC"
+    val collection =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            MediaStore.Audio.Media.getContentUri(
+                MediaStore.VOLUME_EXTERNAL
+            )
+        } else {
+            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+        }
+
+    val projection = arrayOf(
+        MediaStore.Audio.Media._ID,
+        MediaStore.Audio.Media.DISPLAY_NAME,
+        MediaStore.Audio.Media.DURATION,
+        MediaStore.Audio.Media.SIZE,
+        MediaStore.Audio.Media.ARTIST
+    )
+    val query = context.applicationContext.contentResolver.query(
+        collection,
+        projection,
+        selection,
+        null,
+        sortOrder
+    )
+
+    query?.use { cursor ->
+        val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
+        val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)
+        val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
+        val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE)
+        val artistColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
+
+        while (cursor.moveToNext()) {
+            val id = cursor.getLong(idColumn)
+            val title = cursor.getString(titleColumn)
+            val duration = cursor.getInt(durationColumn)
+            val size = cursor.getInt(sizeColumn)
+            val artist = cursor.getString(artistColumn)
+
+            val contentUri = ContentUris.withAppendedId(
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                id
+            )
+            songsList += Song(id,title, artist, contentUri, duration, size)
+        }
+    }
+    return songsList
+}
+
 @Preview(
     showSystemUi = true,
     showBackground = true,
@@ -122,15 +190,15 @@ fun HomeContentPreview() {
     val navController = rememberNavController()
     val viewModel: AppViewModel = viewModel()
     val songs = listOf(
-        Song(1, "I love you1", "Anonymous1", ""),
-        Song(2, "I love you2", "Anonymous2", ""),
-        Song(3, "I love you3", "Anonymous3", ""),
-        Song(4, "I love you4", "Anonymous4", ""),
-        Song(5, "I love you5", "Anonymous5", ""),
-        Song(6, "I love you6", "Anonymous6", ""),
-        Song(7, "I love you7", "Anonymous7", ""),
-        Song(8, "I love you8", "Anonymous8", ""),
-        Song(9, "I love you9", "Anonymous9", "")
+        Song(1L, "I love you1", "Anonymous1", Uri.EMPTY, 100, 3),
+        Song(2L, "I love you2", "Anonymous2", Uri.EMPTY, 200, 7),
+        Song(3L, "I love you3", "Anonymous3", Uri.EMPTY, 300, 2),
+        Song(4L, "I love you4", "Anonymous4", Uri.EMPTY, 200, 5),
+        Song(5L, "I love you5", "Anonymous5", Uri.EMPTY, 100, 10),
+        Song(6L, "I love you6", "Anonymous6", Uri.EMPTY, 300, 6),
+        Song(7L, "I love you7", "Anonymous7", Uri.EMPTY, 200, 2),
+        Song(8L, "I love you8", "Anonymous8", Uri.EMPTY, 300, 4),
+        Song(9L, "I love you9", "Anonymous9", Uri.EMPTY, 400, 5)
     )
 
     MusicPlayerTheme {

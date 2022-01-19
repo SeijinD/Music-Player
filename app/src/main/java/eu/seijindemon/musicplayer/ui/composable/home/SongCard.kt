@@ -1,6 +1,7 @@
 package eu.seijindemon.musicplayer.ui.composable.home
 
 import android.content.res.Configuration
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -76,7 +77,7 @@ fun SongCard(
                 maxLines = 1
             )
             AutoSizeText(
-                text = song.singer,
+                text = song.artist,
                 maxFontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
                 maxLines = 1
@@ -94,7 +95,7 @@ fun SongCard(
 fun SongCardPreview() {
     val navController = rememberNavController()
     val viewModel: AppViewModel = viewModel()
-    val song = Song(1, "I love you", "Anonymous", "This is song for a big love.")
+    val song = Song(1L, "I love you", "Anonymous", Uri.EMPTY, 0, 0)
 
     MusicPlayerTheme {
         SongCard(

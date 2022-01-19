@@ -16,10 +16,10 @@ class AppViewModel @Inject constructor(
 
 ): ViewModel() {
 
-    private var _currentSong = MutableLiveData(-1)
-    var currentSong: LiveData<Int> = _currentSong
+    private var _currentSong = MutableLiveData(-1L)
+    var currentSong: LiveData<Long> = _currentSong
 
-    fun getCurrentSongId(id: Int) {
+    fun getCurrentSongId(id: Long) {
         _currentSong.value = id
     }
 

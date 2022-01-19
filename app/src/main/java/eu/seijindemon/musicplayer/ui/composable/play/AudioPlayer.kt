@@ -2,6 +2,7 @@ package eu.seijindemon.musicplayer.ui.composable.play
 
 import android.content.res.Configuration
 import android.media.MediaPlayer
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,15 +45,15 @@ fun AudioPlayer(
     mediaPlayer: MediaPlayer
 ) {
     val songs = listOf(
-        Song(1, "I love you1", "Anonymous1", ""),
-        Song(2, "I love you2", "Anonymous2", ""),
-        Song(3, "I love you3", "Anonymous3", ""),
-        Song(4, "I love you4", "Anonymous4", ""),
-        Song(5, "I love you5", "Anonymous5", ""),
-        Song(6, "I love you6", "Anonymous6", ""),
-        Song(7, "I love you7", "Anonymous7", ""),
-        Song(8, "I love you8", "Anonymous8", ""),
-        Song(9, "I love you9", "Anonymous9", "")
+        Song(1L, "I love you1", "Anonymous1", Uri.EMPTY, 100, 3),
+        Song(2L, "I love you2", "Anonymous2", Uri.EMPTY, 200, 7),
+        Song(3L, "I love you3", "Anonymous3", Uri.EMPTY, 300, 2),
+        Song(4L, "I love you4", "Anonymous4", Uri.EMPTY, 200, 5),
+        Song(5L, "I love you5", "Anonymous5", Uri.EMPTY, 100, 10),
+        Song(6L, "I love you6", "Anonymous6", Uri.EMPTY, 300, 6),
+        Song(7L, "I love you7", "Anonymous7", Uri.EMPTY, 200, 2),
+        Song(8L, "I love you8", "Anonymous8", Uri.EMPTY, 300, 4),
+        Song(9L, "I love you9", "Anonymous9", Uri.EMPTY, 400, 5)
     )
 
     val currentSongId = viewModel.currentSong.observeAsState()
@@ -96,7 +97,7 @@ fun AudioPlayer(
             Spacer(modifier = Modifier.height(MaterialTheme.dimens.SpacingCustom_24dp))
             SongDescription(
                 title = currentSong?.title ?: "Audio Name",
-                name = currentSong?.singer ?:"Singer Name"
+                name = currentSong?.artist ?:"Artist Name"
             )
             Spacer(modifier = Modifier.height(MaterialTheme.dimens.SpacingDouble_32dp))
             Column(
