@@ -4,5 +4,5 @@ data class Song(
     val id: Int = 0,
     val title: String = "",
     val singer: String = "",
-    val description: String = ""
+    val url: String = ""
 )

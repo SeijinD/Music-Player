@@ -44,15 +44,15 @@ fun AudioPlayer(
     mediaPlayer: MediaPlayer
 ) {
     val songs = listOf(
-        Song(1, "I love you1", "Anonymous1", "This is song for a big love."),
-        Song(2, "I love you2", "Anonymous2", "This is song for a big love."),
-        Song(3, "I love you3", "Anonymous3", "This is song for a big love."),
-        Song(4, "I love you4", "Anonymous4", "This is song for a big love."),
-        Song(5, "I love you5", "Anonymous5", "This is song for a big love."),
-        Song(6, "I love you6", "Anonymous6", "This is song for a big love."),
-        Song(7, "I love you7", "Anonymous7", "This is song for a big love."),
-        Song(8, "I love you8", "Anonymous8", "This is song for a big love."),
-        Song(9, "I love you9", "Anonymous9", "This is song for a big love.")
+        Song(1, "I love you1", "Anonymous1", ""),
+        Song(2, "I love you2", "Anonymous2", ""),
+        Song(3, "I love you3", "Anonymous3", ""),
+        Song(4, "I love you4", "Anonymous4", ""),
+        Song(5, "I love you5", "Anonymous5", ""),
+        Song(6, "I love you6", "Anonymous6", ""),
+        Song(7, "I love you7", "Anonymous7", ""),
+        Song(8, "I love you8", "Anonymous8", ""),
+        Song(9, "I love you9", "Anonymous9", "")
     )
 
     val currentSongId = viewModel.currentSong.observeAsState()

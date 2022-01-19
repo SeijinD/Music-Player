@@ -10,7 +10,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.stringResource
@@ -21,32 +20,25 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import eu.seijindemon.musicplayer.R
 import eu.seijindemon.musicplayer.data.model.Song
-import eu.seijindemon.musicplayer.ui.composable.general.SetLanguage
 import eu.seijindemon.musicplayer.ui.theme.MusicPlayerTheme
 import eu.seijindemon.musicplayer.ui.viewmodel.AppViewModel
-import eu.seijindemon.musicplayer.ui.viewmodel.LanguageViewModel
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: AppViewModel,
-    languageViewModel: LanguageViewModel
+    viewModel: AppViewModel
 ) {
-    // Language
-    val currentLanguage = languageViewModel.language.observeAsState().value
-    SetLanguage(language = currentLanguage!!)
-
 //    val songs = listOf<Song>() // Change with viewModel list
     val songs = listOf(
-        Song(1, "I love you1", "Anonymous1", "This is song for a big love."),
-        Song(2, "I love you2", "Anonymous2", "This is song for a big love."),
-        Song(3, "I love you3", "Anonymous3", "This is song for a big love."),
-        Song(4, "I love you4", "Anonymous4", "This is song for a big love."),
-        Song(5, "I love you5", "Anonymous5", "This is song for a big love."),
-        Song(6, "I love you6", "Anonymous6", "This is song for a big love."),
-        Song(7, "I love you7", "Anonymous7", "This is song for a big love."),
-        Song(8, "I love you8", "Anonymous8", "This is song for a big love."),
-        Song(9, "I love you9", "Anonymous9", "This is song for a big love.")
+        Song(1, "I love you1", "Anonymous1", ""),
+        Song(2, "I love you2", "Anonymous2", ""),
+        Song(3, "I love you3", "Anonymous3", ""),
+        Song(4, "I love you4", "Anonymous4", ""),
+        Song(5, "I love you5", "Anonymous5", ""),
+        Song(6, "I love you6", "Anonymous6", ""),
+        Song(7, "I love you7", "Anonymous7", ""),
+        Song(8, "I love you8", "Anonymous8", ""),
+        Song(9, "I love you9", "Anonymous9", "")
     )
 
     MusicPlayerTheme {
@@ -130,15 +122,15 @@ fun HomeContentPreview() {
     val navController = rememberNavController()
     val viewModel: AppViewModel = viewModel()
     val songs = listOf(
-        Song(1, "I love you1", "Anonymous1", "This is song for a big love."),
-        Song(2, "I love you2", "Anonymous2", "This is song for a big love."),
-        Song(3, "I love you3", "Anonymous3", "This is song for a big love."),
-        Song(4, "I love you4", "Anonymous4", "This is song for a big love."),
-        Song(5, "I love you5", "Anonymous5", "This is song for a big love."),
-        Song(6, "I love you6", "Anonymous6", "This is song for a big love."),
-        Song(7, "I love you7", "Anonymous7", "This is song for a big love."),
-        Song(8, "I love you8", "Anonymous8", "This is song for a big love."),
-        Song(9, "I love you9", "Anonymous9", "This is song for a big love.")
+        Song(1, "I love you1", "Anonymous1", ""),
+        Song(2, "I love you2", "Anonymous2", ""),
+        Song(3, "I love you3", "Anonymous3", ""),
+        Song(4, "I love you4", "Anonymous4", ""),
+        Song(5, "I love you5", "Anonymous5", ""),
+        Song(6, "I love you6", "Anonymous6", ""),
+        Song(7, "I love you7", "Anonymous7", ""),
+        Song(8, "I love you8", "Anonymous8", ""),
+        Song(9, "I love you9", "Anonymous9", "")
     )
 
     MusicPlayerTheme {
