@@ -35,7 +35,7 @@ fun NavigationComponent() {
     val viewModel: AppViewModel = viewModel()
     val languageViewModel: LanguageViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = "play") {
+    NavHost(navController = navController, startDestination = "splash") {
         composable("splash") { SplashScreen(navController) }
         composable("home") { HomeScreen(navController, viewModel, languageViewModel) }
         composable("play") { PlayScreen(navController, viewModel) }

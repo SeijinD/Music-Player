@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -31,19 +30,40 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import eu.seijindemon.musicplayer.R
+import eu.seijindemon.musicplayer.data.model.Song
 import eu.seijindemon.musicplayer.ui.composable.general.FormatTime
 import eu.seijindemon.musicplayer.ui.theme.MusicPlayerTheme
 import eu.seijindemon.musicplayer.ui.theme.dimens
 import eu.seijindemon.musicplayer.ui.viewmodel.AppViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
 
 @Composable
 fun AudioPlayer(
     viewModel: AppViewModel,
     mediaPlayer: MediaPlayer
 ) {
+    val songs = listOf(
+        Song(1, "I love you1", "Anonymous1", "This is song for a big love."),
+        Song(2, "I love you2", "Anonymous2", "This is song for a big love."),
+        Song(3, "I love you3", "Anonymous3", "This is song for a big love."),
+        Song(4, "I love you4", "Anonymous4", "This is song for a big love."),
+        Song(5, "I love you5", "Anonymous5", "This is song for a big love."),
+        Song(6, "I love you6", "Anonymous6", "This is song for a big love."),
+        Song(7, "I love you7", "Anonymous7", "This is song for a big love."),
+        Song(8, "I love you8", "Anonymous8", "This is song for a big love."),
+        Song(9, "I love you9", "Anonymous9", "This is song for a big love.")
+    )
+
+    val currentSongId = viewModel.currentSong.observeAsState()
+    var currentSong: Song? = null
+
+    for (song in songs) {
+        if (song.id == currentSongId.value) {
+            currentSong = song
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -75,8 +95,8 @@ fun AudioPlayer(
             )
             Spacer(modifier = Modifier.height(MaterialTheme.dimens.SpacingCustom_24dp))
             SongDescription(
-                title = "Audio Name",
-                name = "Singer Name"
+                title = currentSong?.title ?: "Audio Name",
+                name = currentSong?.singer ?:"Singer Name"
             )
             Spacer(modifier = Modifier.height(MaterialTheme.dimens.SpacingDouble_32dp))
             Column(

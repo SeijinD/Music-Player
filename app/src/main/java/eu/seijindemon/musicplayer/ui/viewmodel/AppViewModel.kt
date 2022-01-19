@@ -16,6 +16,14 @@ class AppViewModel @Inject constructor(
 
 ): ViewModel() {
 
+    private var _currentSong = MutableLiveData(-1)
+    var currentSong: LiveData<Int> = _currentSong
+
+    fun getCurrentSongId(id: Int) {
+        _currentSong.value = id
+    }
+
+    // Media
     private var currentDuration: CountDownTimer? = null
 
     private val _currentMinutes = MutableLiveData(0)
@@ -37,6 +45,8 @@ class AppViewModel @Inject constructor(
 
         currentDuration!!.start()
     }
+
+    // General
 
     fun getFirstColor(): Color {
         val random = Random()
