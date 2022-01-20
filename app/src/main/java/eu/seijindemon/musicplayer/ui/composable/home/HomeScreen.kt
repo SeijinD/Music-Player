@@ -27,11 +27,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -41,7 +43,10 @@ import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
 import eu.seijindemon.musicplayer.R
 import eu.seijindemon.musicplayer.data.model.Song
+import eu.seijindemon.musicplayer.ui.composable.general.AutoSizeText
+import eu.seijindemon.musicplayer.ui.composable.general.loadSongs
 import eu.seijindemon.musicplayer.ui.theme.MusicPlayerTheme
+import eu.seijindemon.musicplayer.ui.theme.dimens
 import eu.seijindemon.musicplayer.ui.viewmodel.AppViewModel
 
 @ExperimentalPermissionsApi
@@ -51,8 +56,8 @@ fun HomeScreen(
     viewModel: AppViewModel
 ) {
     val context = LocalContext.current
-    var songsList = mutableListOf<Song>()
     val openDialogPermission = remember { mutableStateOf(false) }
+    val openDialogSort = remember { mutableStateOf(false) }
     // Track if the user doesn't want to see the rationale any more.
     var doNotShowRationale by rememberSaveable { mutableStateOf(false) }
     val readExternalPermissionState = rememberPermissionState(permission = android.Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -72,11 +77,11 @@ fun HomeScreen(
                     Dialog(onDismissRequest = { openDialogPermission.value = false }) {
                         Column(
                             modifier = Modifier
-                                .padding(all = 5.dp)
+                                .padding(all = MaterialTheme.dimens.SpacingCustom_6dp)
                                 .fillMaxWidth()
-                                .clip(RoundedCornerShape(8.dp))
+                                .clip(RoundedCornerShape(MaterialTheme.dimens.SpacingHalf_8dp))
                                 .background(Color.White),
-                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.SpacingHalf_8dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
@@ -89,7 +94,7 @@ fun HomeScreen(
                                 }) {
                                     Text("Ok!")
                                 }
-                                Spacer(Modifier.width(8.dp))
+                                Spacer(Modifier.width(MaterialTheme.dimens.SpacingHalf_8dp))
                                 Button(onClick = {
                                     doNotShowRationale = true
                                 }) {
@@ -113,8 +118,7 @@ fun HomeScreen(
 //            "Read Permission is granted.",
 //            Toast.LENGTH_SHORT
 //        ).show()
-        songsList = loadSongs()
-        viewModel.getSongs(songsList)
+        viewModel.getSongs(loadSongs())
     }
 
     MusicPlayerTheme {
@@ -128,10 +132,19 @@ fun HomeScreen(
                     },
                     actions = {
                         Icon(
+                            imageVector = Icons.Filled.Sort,
+                            contentDescription = "Sort",
+                            modifier = Modifier
+                                .padding(all = MaterialTheme.dimens.SpacingCustom_6dp)
+                                .clickable(onClick = {
+                                    openDialogSort.value = true
+                                })
+                        )
+                        Icon(
                             imageVector = Icons.Filled.Settings,
                             contentDescription = stringResource(id = R.string.settings),
                             modifier = Modifier
-                                .padding(all = 5.dp)
+                                .padding(all = MaterialTheme.dimens.SpacingCustom_6dp)
                                 .clickable(onClick = {
                                     navController.navigate("settings")
                                 })
@@ -152,6 +165,13 @@ fun HomeScreen(
                 navController = navController,
                 viewModel = viewModel
             )
+            if (openDialogSort.value) {
+                DialogSort(
+                    viewModel = viewModel,
+                    openDialogSort = openDialogSort,
+                    navController = navController
+                )
+            }
         }
     }
 }
@@ -257,62 +277,6 @@ fun ListOfSongs(
             )
         }
     }
-}
-
-@Composable
-private fun loadSongs(): MutableList<Song> {
-    val context = LocalContext.current
-
-    val songsList = mutableListOf<Song>()
-
-    val selection = "${MediaStore.Audio.Media.IS_MUSIC}  !=0"
-    val sortOrder = "${MediaStore.Audio.Media.DISPLAY_NAME} ASC"
-    val collection =
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            MediaStore.Audio.Media.getContentUri(
-                MediaStore.VOLUME_EXTERNAL
-            )
-        } else {
-            MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
-        }
-
-    val projection = arrayOf(
-        MediaStore.Audio.Media._ID,
-        MediaStore.Audio.Media.DISPLAY_NAME,
-        MediaStore.Audio.Media.DURATION,
-        MediaStore.Audio.Media.SIZE,
-        MediaStore.Audio.Media.ARTIST
-    )
-    val query = context.applicationContext.contentResolver.query(
-        collection,
-        projection,
-        selection,
-        null,
-        sortOrder
-    )
-
-    query?.use { cursor ->
-        val idColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
-        val titleColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)
-        val durationColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
-        val sizeColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.SIZE)
-        val artistColumn = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
-
-        while (cursor.moveToNext()) {
-            val id = cursor.getLong(idColumn)
-            val title = cursor.getString(titleColumn)
-            val duration = cursor.getInt(durationColumn)
-            val size = cursor.getInt(sizeColumn)
-            val artist = cursor.getString(artistColumn)
-
-            val contentUri = ContentUris.withAppendedId(
-                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                id
-            )
-            songsList += Song(id,title, artist, contentUri, duration, size)
-        }
-    }
-    return songsList
 }
 
 @Preview(

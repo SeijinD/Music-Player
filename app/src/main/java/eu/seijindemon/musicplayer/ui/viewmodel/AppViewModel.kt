@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import android.media.MediaPlayer
 import android.os.CountDownTimer
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -29,6 +30,15 @@ class AppViewModel @Inject constructor(
 
     fun getCurrentSong(song: Song) {
         _currentSong.value = song
+    }
+
+    // DialogSort
+
+    private var _selectedSort = MutableLiveData<String>()
+    var selectedSort: LiveData<String>? = _selectedSort
+
+    fun getSelectedSort(sort: String) {
+        _selectedSort.value = sort
     }
 
     // Media
