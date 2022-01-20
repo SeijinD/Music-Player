@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.LocalContext
 import eu.seijindemon.musicplayer.data.model.Song
 
 @Composable
-fun loadSongs(sort: String = "_display_name"): MutableList<Song> {
+fun loadSongs(sort: String): MutableList<Song> {
     val context = LocalContext.current
 
     val songsList = mutableListOf<Song>()

@@ -70,7 +70,6 @@ fun DialogSort(
                     )
                 }
             }
-            Log.d("TAG1", selected.value)
             if (selected.value != oldSelected.value) {
                 viewModel.getSongs(loadSongs(selected.value))
                 viewModel.getSelectedSort(selected.value)

@@ -1,10 +1,7 @@
 package eu.seijindemon.musicplayer.ui.composable.home
 
-import android.content.ContentUris
 import android.content.res.Configuration.UI_MODE_TYPE_NORMAL
 import android.net.Uri
-import android.os.Build
-import android.provider.MediaStore
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,13 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -43,7 +38,6 @@ import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
 import eu.seijindemon.musicplayer.R
 import eu.seijindemon.musicplayer.data.model.Song
-import eu.seijindemon.musicplayer.ui.composable.general.AutoSizeText
 import eu.seijindemon.musicplayer.ui.composable.general.loadSongs
 import eu.seijindemon.musicplayer.ui.theme.MusicPlayerTheme
 import eu.seijindemon.musicplayer.ui.theme.dimens
@@ -118,7 +112,8 @@ fun HomeScreen(
 //            "Read Permission is granted.",
 //            Toast.LENGTH_SHORT
 //        ).show()
-        viewModel.getSongs(loadSongs())
+        val selectedSort = viewModel.selectedSort?.observeAsState()
+        viewModel.getSongs(loadSongs(selectedSort?.value ?: "_display_name"))
     }
 
     MusicPlayerTheme {
