@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -24,6 +25,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -154,31 +156,60 @@ fun HomeScreen(
 
 @Composable
 fun HomeContent(
-    songs: List<Song>,
+    songs: MutableList<Song>,
     navController: NavController,
     viewModel: AppViewModel
 ) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        viewModel.getFirstColor(),
-                        viewModel.getSecondColor()
-                    )
-                )
-            ),
-        contentPadding = PaddingValues(
-            all = 5.dp
+    var filteredSongs: MutableList<Song>
+    var query: String by rememberSaveable { mutableStateOf("") }
+
+    Column {
+        TextField(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            value = query,
+            onValueChange = { query = it },
+            maxLines = 1,
+            textStyle = MaterialTheme.typography.subtitle1,
+            singleLine = true,
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
         )
-    ) {
-        items(songs) { song ->
-            SongCard(
-                song = song,
-                navController = navController,
-                viewModel = viewModel
+
+        LazyColumn(
+            modifier = Modifier
+                .weight(8f)
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            viewModel.getFirstColor(),
+                            viewModel.getSecondColor()
+                        )
+                    )
+                ),
+            contentPadding = PaddingValues(
+                all = 5.dp
             )
+        ) {
+            filteredSongs = if (query.isEmpty()) {
+                songs
+            } else {
+                val result = mutableListOf<Song>()
+                for (song in songs) {
+                    if (song.title.contains(query, ignoreCase = true)) {
+                        result.add(song)
+                    }
+                }
+                result
+            }
+            items(filteredSongs) { song ->
+                SongCard(
+                    song = song,
+                    navController = navController,
+                    viewModel = viewModel
+                )
+            }
         }
     }
 }
@@ -248,7 +279,7 @@ private fun loadSongs(): MutableList<Song> {
 fun HomeContentPreview() {
     val navController = rememberNavController()
     val viewModel: AppViewModel = viewModel()
-    val songs = listOf(
+    val songs = mutableListOf(
         Song(1L, "I love you1", "Anonymous1", Uri.EMPTY, 100, 3),
         Song(2L, "I love you2", "Anonymous2", Uri.EMPTY, 200, 7),
         Song(3L, "I love you3", "Anonymous3", Uri.EMPTY, 300, 2),

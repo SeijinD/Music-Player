@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -74,13 +75,15 @@ fun SongCard(
                 text = song.title,
                 maxFontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                maxLines = 1
+                maxLines = 1,
+                color = Color.White
             )
             AutoSizeText(
                 text = song.artist,
                 maxFontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
-                maxLines = 1
+                maxLines = 1,
+                color = Color.White
             )
         }
     }
