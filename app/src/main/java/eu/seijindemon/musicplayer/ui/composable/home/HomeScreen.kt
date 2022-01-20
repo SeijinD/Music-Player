@@ -17,15 +17,18 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -146,7 +149,6 @@ fun HomeScreen(
             }
         ) {
             HomeContent(
-                songs = songsList,
                 navController = navController,
                 viewModel = viewModel
             )
@@ -156,60 +158,103 @@ fun HomeScreen(
 
 @Composable
 fun HomeContent(
-    songs: MutableList<Song>,
     navController: NavController,
     viewModel: AppViewModel
 ) {
-    var filteredSongs: MutableList<Song>
-    var query: String by rememberSaveable { mutableStateOf("") }
+    val textState = remember { mutableStateOf(TextFieldValue("")) }
 
     Column {
-        TextField(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
-            value = query,
-            onValueChange = { query = it },
-            maxLines = 1,
-            textStyle = MaterialTheme.typography.subtitle1,
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        Search(textState = textState)
+        ListOfSongs(
+            viewModel = viewModel,
+            navController = navController,
+            textState = textState
         )
+    }
+}
 
-        LazyColumn(
-            modifier = Modifier
-                .weight(8f)
-                .fillMaxSize()
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            viewModel.getFirstColor(),
-                            viewModel.getSecondColor()
-                        )
-                    )
-                ),
-            contentPadding = PaddingValues(
-                all = 5.dp
+@Composable
+fun Search(textState: MutableState<TextFieldValue>) {
+    TextField(
+        modifier = Modifier
+            .fillMaxWidth(),
+        value = textState.value,
+        onValueChange = { textState.value = it },
+        maxLines = 1,
+        singleLine = true,
+        textStyle = MaterialTheme.typography.subtitle1,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+        leadingIcon = {
+            Icon(
+                Icons.Default.Search,
+                contentDescription = "",
+                modifier = Modifier
+                    .padding(15.dp)
+                    .size(24.dp)
             )
-        ) {
-            filteredSongs = if (query.isEmpty()) {
-                songs
-            } else {
-                val result = mutableListOf<Song>()
-                for (song in songs) {
-                    if (song.title.contains(query, ignoreCase = true)) {
-                        result.add(song)
+        },
+        trailingIcon = {
+            if (textState.value != TextFieldValue("")) {
+                IconButton(
+                    onClick = {
+                        textState.value = TextFieldValue("")
                     }
+                ) {
+                    Icon(
+                        Icons.Default.Close,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .padding(15.dp)
+                            .size(24.dp)
+                    )
                 }
-                result
             }
-            items(filteredSongs) { song ->
-                SongCard(
-                    song = song,
-                    navController = navController,
-                    viewModel = viewModel
+        },
+        shape = RectangleShape
+    )
+}
+
+@Composable
+fun ListOfSongs(
+    viewModel: AppViewModel,
+    navController: NavController,
+    textState: MutableState<TextFieldValue>
+) {
+    val songs = viewModel.songs.observeAsState().value ?: listOf()
+    var filteredSongs: List<Song>
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        viewModel.getFirstColor(),
+                        viewModel.getSecondColor()
+                    )
                 )
+            ),
+        contentPadding = PaddingValues(
+            all = 5.dp
+        )
+    ) {
+        filteredSongs = if (textState.value.text.isEmpty()) {
+            songs
+        } else {
+            val result = mutableListOf<Song>()
+            for (song in songs) {
+                if (song.title.contains(textState.value.text, ignoreCase = true)) {
+                    result.add(song)
+                }
             }
+            result
+        }
+        items(filteredSongs) { song ->
+            SongCard(
+                song = song,
+                navController = navController,
+                viewModel = viewModel
+            )
         }
     }
 }
@@ -293,7 +338,6 @@ fun HomeContentPreview() {
 
     MusicPlayerTheme {
         HomeContent(
-            songs = songs,
             navController = navController,
             viewModel = viewModel
         )
