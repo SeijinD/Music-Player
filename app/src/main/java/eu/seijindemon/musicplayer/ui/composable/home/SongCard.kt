@@ -2,9 +2,7 @@ package eu.seijindemon.musicplayer.ui.composable.home
 
 import android.content.res.Configuration
 import android.net.Uri
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,8 +13,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +38,7 @@ fun SongCard(
     navController: NavController,
     viewModel: AppViewModel
 ) {
+    val scroll = rememberScrollState(0)
     Row(
         modifier = Modifier
             .padding(all = MaterialTheme.dimens.SpacingCustom_6dp)
@@ -76,7 +77,9 @@ fun SongCard(
                 maxFontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
-                color = Color.White
+                color = Color.White,
+                modifier = Modifier
+                    .horizontalScroll(scroll)
             )
             AutoSizeText(
                 text = song.artist,

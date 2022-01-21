@@ -3,9 +3,7 @@ package eu.seijindemon.musicplayer.ui.composable.play
 import android.content.res.Configuration
 import android.media.MediaPlayer
 import android.net.Uri
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -29,9 +27,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import eu.seijindemon.musicplayer.R
 import eu.seijindemon.musicplayer.data.model.Song
+import eu.seijindemon.musicplayer.ui.composable.general.AutoSizeText
 import eu.seijindemon.musicplayer.ui.composable.general.FormatTime
 import eu.seijindemon.musicplayer.ui.theme.MusicPlayerTheme
 import eu.seijindemon.musicplayer.ui.theme.dimens
@@ -104,21 +104,26 @@ fun SongDescription(
     title: String,
     name: String
 ) {
-    Text(
+    val scroll = rememberScrollState(0)
+    AutoSizeText(
         text = title,
+        maxFontSize = 20.sp,
         style = MaterialTheme.typography.h5,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         color = Color.White,
-        fontWeight = FontWeight.Bold
+        fontWeight = FontWeight.Bold,
+        modifier = Modifier
+            .horizontalScroll(scroll)
     )
 
     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-        Text(
+        AutoSizeText(
             text = name,
             style = MaterialTheme.typography.body2,
             maxLines = 1,
-            color = Color.White
+            color = Color.White,
+            maxFontSize = 16.sp
         )
     }
 }
