@@ -69,7 +69,6 @@ fun SettingsScreen(
             }
         ) {
             SettingsContent(
-                navController = navController,
                 languageViewModel = languageViewModel
             )
         }
@@ -78,7 +77,6 @@ fun SettingsScreen(
 
 @Composable
 fun SettingsContent(
-    navController: NavController,
     languageViewModel: LanguageViewModel
 ) {
     val context = LocalContext.current
@@ -291,11 +289,9 @@ fun settingsRowModifier(
 )
 @Composable
 fun SettingsContentPreview() {
-    val navController = rememberNavController()
     val languageViewModel: LanguageViewModel = viewModel()
     MusicPlayerTheme {
         SettingsContent(
-            navController = navController,
             languageViewModel = languageViewModel
         )
     }

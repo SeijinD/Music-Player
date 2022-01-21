@@ -61,12 +61,10 @@ fun PlayScreen (
                 )
             }
         ) {
-            if (currentSong != null) {
-                PlayContent(
-                    viewModel = viewModel,
-                    currentSong = currentSong.value!!
-                )
-            }
+            PlayContent(
+                viewModel = viewModel,
+                currentSong = currentSong.value!!
+            )
         }
     }
 }

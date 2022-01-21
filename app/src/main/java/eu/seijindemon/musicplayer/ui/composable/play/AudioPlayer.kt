@@ -91,7 +91,6 @@ fun AudioPlayer(
                 Spacer(modifier = Modifier.height(MaterialTheme.dimens.SpacingDouble_32dp))
                 PlayerButtons(
                     viewModel = viewModel,
-                    modifier = Modifier.padding(vertical = MaterialTheme.dimens.SpacingHalf_8dp),
                     mediaPlayer = mediaPlayer
                 )
             }
@@ -162,7 +161,6 @@ fun PlayerSlider(
 @Composable
 fun PlayerButtons(
     viewModel: AppViewModel,
-    modifier: Modifier,
     mediaPlayer: MediaPlayer
 ) {
     val scope = rememberCoroutineScope()
