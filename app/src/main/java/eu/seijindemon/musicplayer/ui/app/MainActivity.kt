@@ -22,7 +22,7 @@ import eu.seijindemon.musicplayer.ui.viewmodel.LanguageViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @ExperimentalPermissionsApi
+    @OptIn(ExperimentalPermissionsApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
